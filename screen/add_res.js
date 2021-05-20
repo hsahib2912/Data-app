@@ -166,7 +166,7 @@ export default class add_res extends Component {
             }
           }
         getData();
-        Alert.alert('Hogya ji add data!');
+        Alert.alert('Data added!');
         
     }
     render()
@@ -175,7 +175,7 @@ export default class add_res extends Component {
         return(
             <ScrollView>
             <View style = {styles.container}>
-                <Text style = {styles.txt}> Babeo bharo feilds</Text>
+                <Text style = {styles.txt}> Enter details</Text>
             </View>
             
             <TextInput

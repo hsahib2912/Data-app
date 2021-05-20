@@ -90,11 +90,11 @@ export default class added extends Component {
     removeItem = (key) => {
         console.log(key);
         Alert.alert(  
-            'Pakki gall delete krna je?',
+            'Sure you want to delete',
             '',
             [  
                 {  
-                    text: 'Hanji pakka',  
+                    text: 'Yes',  
                     onPress: () => {
                         let arr = this.state.data.filter((item)=> {
                             return item.key !== key
@@ -109,7 +109,7 @@ export default class added extends Component {
                     },  
                     style: 'cancel',  
                 },  
-                {text: 'Nahi galti hon wali c', onPress: () => console.log('OK Pressed')},  
+                {text: 'No', onPress: () => console.log('OK Pressed')},  
             ]  
         ); 
         
@@ -119,7 +119,7 @@ export default class added extends Component {
         return(
             <ScrollView>
             <View style = {styles.container}>
-                <Text style = {styles.txt}>Ki gall hoyi? Kamm galat krta ki? Koi na delete krdo</Text>
+                <Text style = {styles.txt}>Delete the entries if you entered data incorrectly!</Text>
             </View>
             <View style = {{alignItems:'center',paddingBottom:100}}>
             <FlatList

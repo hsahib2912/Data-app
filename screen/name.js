@@ -59,7 +59,7 @@ export default class name extends Component {
             return(
                 <Fragment>
                 <View style = {styles.container}>
-                    <Text style = {styles.txt}>Babeo naa dasso apna. Kon ho tussi?</Text>
+                    <Text style = {styles.txt}>Please enter your name</Text>
                 </View>
                 
                 <TextInput

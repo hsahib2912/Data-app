@@ -15,17 +15,21 @@ function mainStackScreen(){
     tabBarOptions={{
       labelStyle:{
         fontSize:20,
+        justifyContent:'center',
+        alignItems:'center',
       },
       style:{
         position:'absolute',
-        bottom:25,
-        left :20,
+        bottom:40,
         right:20,
-        elevation:0,
+        left :20,
+        elevation:10,
         borderRadius: 15,
-        height:40,
+        height:30,
         shadowColor:'black',
-        shadowRadius:100,
+        shadowRadius:200,
+        justifyContent:'center',
+        alignItems:'center',
       }
     }}
     >
