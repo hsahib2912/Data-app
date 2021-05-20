@@ -1,17 +1,32 @@
 import React,{Component, Fragment} from 'react';
-import {StyleSheet, Text, View, TextInput,Pressable,FlatList } from 'react-native';
+import {StyleSheet, Text, View, TextInput,Pressable,FlatList, TouchableOpacity,Dimensions, ScrollView,Alert } from 'react-native';
+import {Card} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firebaseConfig from '/Users/harkishansingh/Desktop/react/data-app/firebase.js';
+import 'firebase/firestore';
+import * as firebase from 'firebase';
 
-
-
+const { height, width } = Dimensions.get("window");
+const Resources_coll = firebase.firestore().collection('Resources');
 export default class added extends Component {
     
     constructor(props){
-        
         super(props);
-        this.get_keys();
+        //this.get_keys();
+        
         
     }
+    componentDidMount() {
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+          this.get_keys();
+        });
+      }
+    
+      componentWillUnmount() {
+        this._unsubscribe();
+      }
+    
+    
     state = {
         keys : [],
         data : [],
@@ -20,11 +35,16 @@ export default class added extends Component {
     make_data = ()=>{
         const getData = async () => {
             try {
-                console.log('hello');
-                var tmparr = {};
+                //console.log('hello');
+                var tmparr = [];
                 for (id in this.state.keys){
                     const d = await AsyncStorage.getItem(this.state.keys[id]);
-                    tmparr[this.state.keys[id]] = JSON.parse(d);
+                    if(this.state.keys[id]!='name'){
+                        var k = JSON.parse(d);
+                        k.key = this.state.keys[id];
+                        //console.log(k);
+                        tmparr.push(k);
+                    }
                 }
                 
                 this.setState({
@@ -45,30 +65,82 @@ export default class added extends Component {
                 this.setState({
                     keys:allkeys,
                 });
-                console.log('Set aa kamm ');
+                //console.log('Set aa kamm ');
                 this.make_data();
             } catch (e) {
                 console.log('Error')}
         }    
         storeData2();
     }
+    delete_from_cache=(key)=>{
+        const deldata = async () => {
+            try {
+              await AsyncStorage.removeItem(key);
+              console.log("Deleted from Cache");
+            }catch(e){
+                console.log('Error removing from cache');
+            }
+        }
+        deldata();
 
-    
+    }
+    delete_from_firebase=(key)=>{
+        Resources_coll.doc(key).delete().then(()=>{console.log('deleted!!')});
+    }
+    removeItem = (key) => {
+        console.log(key);
+        Alert.alert(  
+            'Pakki gall delete krna je?',
+            '',
+            [  
+                {  
+                    text: 'Hanji pakka',  
+                    onPress: () => {
+                        let arr = this.state.data.filter((item)=> {
+                            return item.key !== key
+                            });
+                            console.log(arr);
+                            this.setState({
+                                data:arr,
+                            });
+                        this.delete_from_firebase(key);
+                        this.delete_from_cache(key);
+
+                    },  
+                    style: 'cancel',  
+                },  
+                {text: 'Nahi galti hon wali c', onPress: () => console.log('OK Pressed')},  
+            ]  
+        ); 
+        
+      };
     render()
     {
         return(
-            <Fragment>
+            <ScrollView>
             <View style = {styles.container}>
                 <Text style = {styles.txt}>Ki gall hoyi? Kamm galat krta ki? Koi na delete krdo</Text>
             </View>
             <View style = {{alignItems:'center',paddingBottom:100}}>
-                <Pressable style = {styles.appButtonContainer} onPress = {()=> this.get_keys()}>
-                    <Text style = {{color:'white',fontSize:20}}>Submit</Text>
-                </Pressable>
+            <FlatList
+                contentContainerStyle = {styles.flatList}        
+                data = {this.state.data}
+                renderItem={({item}) =>  
+                    <TouchableOpacity 
+                    style = {styles.cardContainer}
+                    onPress = {()=>this.removeItem(item.key)}
+                    >
+                        <Card style={[styles.card, {backgroundColor: item.color}]}>
+                            <Text style={styles.txt2}>Donor Name :{item.Dname} {"\n"}Phone :{item.Phone} {"\n"}
+                            Address : {item.Address} {"\n"}
+                            City : {item.City}, Resource : {item.Resource}
+                            </Text>
+                        </Card>
+                    </TouchableOpacity>} 
+            />  
             </View>
-                
             
-            </Fragment>
+            </ScrollView>
         );
     
     }
@@ -85,6 +157,11 @@ const styles = StyleSheet.create({
         fontSize : 30,
         fontWeight : 'bold'
     },
+    txt2:{
+        fontSize : 15,
+        fontWeight : 'bold',
+        color:'red',
+    },
     inptxt:{
         fontSize : 20,
         margin : 20,
@@ -93,14 +170,20 @@ const styles = StyleSheet.create({
         borderColor: '#007AFF',
         borderWidth: 5
     },
-    appButtonContainer: {
-        alignItems: 'center',
-        width:'50%',
-        backgroundColor: "#007AFF",
-        borderRadius: 100,
-        paddingVertical: 20,
-        
-      }
-  });
+    flatList: {
+        //padding: 50,
+        //paddingVertical: 16,
+    },
+    cardContainer: {
+        width: width,
+        //marginRight: 8,
 
-  
+      },
+    card: {
+    //height: 100,
+    //width:200,
+    //width: width * 0.5,
+    //borderRadius: 200,
+    //padding: ,
+    },
+  });

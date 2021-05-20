@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "data-app",
+    "name": "Jattan ala app",
     "slug": "data-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,13 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sahib29.dataapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.sahib29.dataapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

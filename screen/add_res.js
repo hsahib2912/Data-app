@@ -1,7 +1,6 @@
 import React,{useState,Component, Fragment} from 'react';
-import {StyleSheet, Text, View, TextInput,Pressable,Picker, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, TextInput,Pressable,Picker, ScrollView,Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModalDropdown from 'react-native-modal-dropdown';
 import firebaseConfig from '/Users/harkishansingh/Desktop/react/data-app/firebase.js';
 import 'firebase/firestore';
 import * as firebase from 'firebase';
@@ -21,6 +20,23 @@ export default class add_res extends Component {
         res : "Oxygen",
         docid : "",
     }
+    componentDidMount() {
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+          this.setState({
+            name:"",
+            ph : "",
+            add : "",
+            city : "Delhi",
+            res : "Oxygen",
+            docid : "",
+          })
+        });
+      }
+    
+    componentWillUnmount() {
+        this._unsubscribe();
+    }
+    
 
     handleText = (name,ph,add,city)=>{
         console.log(this.state.city);
@@ -81,7 +97,6 @@ export default class add_res extends Component {
                     console.log('OO ki hoya?')
                 }
             }
-            console.log('Hi wasssup2222');
             storeData();
         }
         else{
@@ -109,6 +124,9 @@ export default class add_res extends Component {
         
     }
     bttnpressed=(name,add,ph,city,res)=>{
+        this.textInput1.clear();
+        this.textInput2.clear();
+        this.textInput3.clear();
         const getData = async () => {
             try {
               const value = await AsyncStorage.getItem('name')
@@ -148,6 +166,7 @@ export default class add_res extends Component {
             }
           }
         getData();
+        Alert.alert('Hogya ji add data!');
         
     }
     render()
@@ -160,6 +179,7 @@ export default class add_res extends Component {
             </View>
             
             <TextInput
+                ref={input => { this.textInput1 = input }}
                 style = {styles.inptxt}
                 placeholderTextColor = 'grey'
                 placeholder="Name of donor"  
@@ -167,13 +187,17 @@ export default class add_res extends Component {
                 clearButtonMode = 'always'
             />
             <TextInput
+                ref={input => { this.textInput2 = input }}
                 style = {styles.inptxt}
                 placeholderTextColor = 'grey'
                 placeholder="Phone of donor"  
                 onChangeText = {(ph)=>this.handleText("",ph,"","")}
                 clearButtonMode = 'always'
+                keyboardType = 'number-pad'
+                maxLength = {10}
             />
             <TextInput
+                ref={input => { this.textInput3 = input }}
                 style = {styles.inptxt}
                 placeholderTextColor = 'grey'
                 placeholder="Address of donor"  
@@ -185,6 +209,12 @@ export default class add_res extends Component {
                 onValueChange={(itemValue) => this.setSelectedValueCity(itemValue)}>
                 <Picker.Item label="Delhi" value="Delhi" />
                 <Picker.Item label="Mumbai" value="Mumbai" />
+                <Picker.Item label="Hyderabad" value="Hyderabad" />
+                <Picker.Item label="Bangalore / Bengaluru" value="Bangalore" />
+                <Picker.Item label="Punjab" value="Punjab" />
+                <Picker.Item label="Tamil Nadu" value="Tamil" />
+                <Picker.Item label="Kerala" value="Kerala" />
+                <Picker.Item label="UP / Bihar" value="UP" />
             </Picker>
 
             <Picker
@@ -194,6 +224,7 @@ export default class add_res extends Component {
                 <Picker.Item label="Oxygen" value="Oxygen" />
                 <Picker.Item label="Remdesvir" value="Remdesvir" />
                 <Picker.Item label="ICU" value="ICU" />
+                <Picker.Item label="Plasma" value="Plasma" />
             </Picker>
             <View style = {{alignItems:'center',paddingBottom:100}}>
                 <Pressable style = {styles.appButtonContainer} onPress = {()=> this.bttnpressed(this.state.name,this.state.add,this.state.ph,
@@ -201,7 +232,6 @@ export default class add_res extends Component {
                     <Text style = {{color:'white',fontSize:20}}>Submit</Text>
                 </Pressable>
             </View>
-            <Text>Id tuwadi : {this.state.docid}</Text>
             </ScrollView>
         );
     
@@ -226,7 +256,8 @@ const styles = StyleSheet.create({
         height: 40,
         textAlign :'center',
         borderColor: '#007AFF',
-        borderWidth: 5
+        borderWidth: 5,
+        borderRadius:10,
     },
     appButtonContainer: {
         alignItems: 'center',
